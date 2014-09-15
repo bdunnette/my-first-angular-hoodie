@@ -23,7 +23,7 @@
       },
 
       subscribeToHoodieEvents : function() {
-        this.hoodie.account.on('signin reauthenticated', this.handleUserAuthenticated.bind(this));
+        this.hoodie.account.on('signup changeusername signin reauthenticated', this.handleUserAuthenticated.bind(this));
         this.hoodie.account.on('signout', this.handleUserUnauthenticated.bind(this));
         this.hoodie.on('account:error:unauthenticated remote:error:unauthenticated', this.handleUserAuthenticationError.bind(this));
       },
@@ -36,6 +36,9 @@
 
       //
       handleUserUnauthenticated: function() {
+        if (this.hoodie.account.username) {
+          return this.handleUserAuthenticationError();
+        }
         $('html').attr('data-hoodie-account-status', 'signedout');
       },
       handleUserAuthenticationError: function() {
@@ -80,13 +83,13 @@
         case 'changepassword':
           $form = $.modalForm({
             fields: [ 'current_password', 'new_password' ],
-            submit: 'Reset Password'
+            submit: 'Change Password'
           });
           break;
         case 'changeusername':
           $form = $.modalForm({
             fields: [ 'current_password', 'new_username' ],
-            submit: 'Reset Password'
+            submit: 'Change Username'
           });
           break;
         case 'signout':
@@ -142,4 +145,4 @@
       };
     };
   });
-}( window.jQuery )
+}( window.jQuery );
